@@ -17,7 +17,6 @@ bb4 = BIG_FONT.render('The London Conference', True, BLACK)
 b4 = bb4.get_rect(topleft=(5, 5))
 contsign = SMALL_FONT.render('Click to Continue', True, BLACK)
 p = True
-prit = False
 l1 = False
 l2 = False
 l3 = False
@@ -149,6 +148,7 @@ def prolg(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny):
 
 
 def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny):
+    name = ""
     screen = pygame.display.set_mode((screenx, screeny))
     title = fnt1.render("John A. Macdonald", True, txt_col)
     t1 = fnt2.render("He told me you would come.", True, txt_col)
@@ -156,12 +156,16 @@ def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny):
     t22 = fnt2.render("letter.", True, txt_col)
     t31 = fnt2.render("Well... What would you like me to call", True, txt_col) 
     t32 = fnt2.render("you:", True, txt_col)
+    tt41 = fnt2.render("We will be meeting with the", True, txt_col) 
+    tt42 = fnt2.render("Canadaien-French ambasador:", True, txt_col) 
+    tt43 = fnt2.render("George- Etienne Cartier", True, txt_col)
     font = pygame.font.Font(None, 30)
-    name = ""
+    
+    welcome = False
     text = ""
     input_box = pygame.Rect(67, 226, 140, 32)
 
-    prit = False
+    
     
     color_inactive = pygame.Color('lightskyblue3')
     color_active = pygame.Color('dodgerblue2')
@@ -173,20 +177,11 @@ def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny):
 
     while True:
         mousepos = pygame.mouse.get_pos()
+        tt31 = fnt2.render("Well " + name + ", We are headed to the", True, txt_col)
+        tt32 = fnt2.render("Charlottetown Conference.", True, txt_col)
         screen.fill((214, 204, 169))
         screen.blit(title, (5, 5))
         name = ""
-
-        if greet == True:
-            screen.blit(t1, (5, 55))
-            screen.blit(t21, (5, 95))
-            screen.blit(t22, (5, 135))
-            screen.blit(t31, (5, 175))
-            screen.blit(t32, (5, 215))
-        if prit == True:
-            print(name)
-
-        
 
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
@@ -212,20 +207,40 @@ def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny):
                     else:
                         text += e.unicode
 
+        if greet == True:
+            screen.blit(t1, (5, 55))
+            screen.blit(t21, (5, 95))
+            screen.blit(t22, (5, 135))
+            screen.blit(t31, (5, 175))
+            screen.blit(t32, (5, 215))
+            txt_surface = font.render(text, True, txt_col)
+            width = max(200, txt_surface.get_width()+10)
+            input_box.w = width
+            # Blit the text.
+            screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
+
+            pygame.draw.rect(screen, color, input_box, 2)
+
+        if welcome == True:
+            screen.blit(tt31, (5, 55))
+            screen.blit(tt32, (5, 95))
+            screen.blit(tt41, (5, 135))
+            screen.blit(tt42, (5, 175))
+            screen.blit(tt43, (5, 215))
+            
+
+
+        
         if nameshow == True:
             
             name = text
+            greet = False
+            welcome = True
             
                
             
 
-        txt_surface = font.render(text, True, txt_col)
-        width = max(200, txt_surface.get_width()+10)
-        input_box.w = width
-        # Blit the text.
-        screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
-
-        pygame.draw.rect(screen, color, input_box, 2)
+        
         
         pygame.display.update()
 
