@@ -5,6 +5,7 @@ pygame.init()
 
 SCREEN_SIZE = (500, 500)
 BLACK = (0, 0, 0)
+BLUE = (0, 0, 255)
 BIG_FONT = pygame.font.Font('SedgwickAveDisplay-Regular.ttf', 40)
 SMALL_FONT = pygame.font.Font('SedgwickAve-Regular.ttf', 30)
 bb1 = BIG_FONT.render('Prologue', True, BLACK)
@@ -15,7 +16,7 @@ bb3 = BIG_FONT.render('The Quebec Conference', True, BLACK)
 b3 = bb3.get_rect(topleft=(5, 5))
 bb4 = BIG_FONT.render('The London Conference', True, BLACK)
 b4 = bb4.get_rect(topleft=(5, 5))
-contsign = SMALL_FONT.render('Click to Continue', True, BLACK)
+contsign = SMALL_FONT.render('Click to Continue', True, BLUE)
 p = True
 l1 = False
 l2 = False
@@ -49,7 +50,7 @@ def levelselect(pl, l, ll, lll):
                     prolg(p, l1, l2, l3, BIG_FONT, SMALL_FONT, BLACK, 500, 950)
 
                 if b2.collidepoint(e.pos):
-                    cc(p, l1, l2, l3, BIG_FONT, SMALL_FONT, BLACK, 500, 500)
+                    cc(p, l1, l2, l3, BIG_FONT, SMALL_FONT, BLACK, 500, 500, contsign)
 
 
             
@@ -147,7 +148,7 @@ def prolg(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny):
         pygame.display.update()
 
 
-def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny):
+def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny, ctc):
     name = ""
     screen = pygame.display.set_mode((screenx, screeny))
     title = fnt1.render("John A. Macdonald", True, txt_col)
@@ -156,12 +157,17 @@ def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny):
     t22 = fnt2.render("letter.", True, txt_col)
     t31 = fnt2.render("Well... What would you like me to call", True, txt_col) 
     t32 = fnt2.render("you:", True, txt_col)
-    tt41 = fnt2.render("We will be meeting with the", True, txt_col) 
-    tt42 = fnt2.render("Canadaien-French ambasador:", True, txt_col) 
-    tt43 = fnt2.render("George- Etienne Cartier", True, txt_col)
+    tt41 = fnt2.render("We will be meeting with", True, txt_col) 
+    tt42 = fnt2.render("George- Etienne Cartier & George", True, txt_col) 
+    tt43 = fnt2.render("Brown", True, txt_col)
+    tt51 = fnt2.render("Our goal is to convince the maritime", True, txt_col) 
+    tt52 = fnt2.render("provinces to join the province of Canada", True, txt_col)
+    ctc_hitbox = ctc.get_rect(topleft = (5, 335))
     font = pygame.font.Font(None, 30)
     
     welcome = False
+    day14 = False
+    day57 = False
     text = ""
     input_box = pygame.Rect(67, 226, 140, 32)
 
@@ -176,6 +182,7 @@ def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny):
 
 
     while True:
+        print(welcome)
         mousepos = pygame.mouse.get_pos()
         tt31 = fnt2.render("Well " + name + ", We are headed to the", True, txt_col)
         tt32 = fnt2.render("Charlottetown Conference.", True, txt_col)
@@ -195,6 +202,11 @@ def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny):
                     active = False
                 # Change the current color of the input box.
                 color = color_active if active else color_inactive
+
+                if ctc_hitbox.collidepoint(e.pos):
+                    welcome = False
+                    nameshow = False
+                    day14 = True
             if e.type == pygame.KEYDOWN:
                 if active:
                     if e.key == pygame.K_RETURN:
@@ -227,6 +239,13 @@ def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny):
             screen.blit(tt41, (5, 135))
             screen.blit(tt42, (5, 175))
             screen.blit(tt43, (5, 215))
+            screen.blit(tt51, (5, 255))
+            screen.blit(tt52, (5, 295))
+            screen.blit(ctc, (5, 335))
+        if day14 == True:
+            screen.blit(ctc, (5, 55))
+        
+
             
 
 
