@@ -33,6 +33,7 @@ p = True
 l1 = False
 l2 = False
 l3 = False
+fin = False
 name = ""
 COLOR_INACTIVE = pygame.Color('lightskyblue3')
 COLOR_ACTIVE = pygame.Color('dodgerblue2')
@@ -81,7 +82,7 @@ class InputBox:
         # Blit the rect.
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
-def levelselect(pl, l, ll, lll, clock, nm):
+def levelselect(pl, l, ll, lll, f, clock, nm):
     screen = pygame.display.set_mode(SCREEN_SIZE)
     mousepos = pygame.mouse.get_pos()
     
@@ -104,6 +105,12 @@ def levelselect(pl, l, ll, lll, clock, nm):
             screen.blit(bbl3, b3)
             screen.blit(bb4, b4)
 
+        if f == True:
+            screen.blit(bbl2, b2)
+            screen.blit(bbl3, b3)
+            screen.blit(bbl4, b4)
+            
+
 
 
         for e in pygame.event.get():
@@ -115,21 +122,24 @@ def levelselect(pl, l, ll, lll, clock, nm):
             
             
             if e.type == pygame.MOUSEBUTTONDOWN:
+                if b4.collidepoint(e.pos):
+                    name = nm
+                    lc(p, l1, l2, l3, fin, BIG_FONT, SMALL_FONT, BLACK, 500, 500, contsign, CLOCK, name)
                 if b3.collidepoint(e.pos):
                     name = nm
-                    qc(p, l1, l2, l3, BIG_FONT, SMALL_FONT, BLACK, 500, 500, contsign, CLOCK, name)
-                    print("youu say ooooooogaaaa booooooga")
+                    qc(p, l1, l2, l3, fin, BIG_FONT, SMALL_FONT, BLACK, 500, 500, contsign, CLOCK, name)
+                    
                     
                 if b1.collidepoint(e.pos):
-                    prolg(p, l1, l2, l3, BIG_FONT, SMALL_FONT, BLACK, 500, 950, CLOCK)
+                    prolg(p, l1, l2, l3, fin, BIG_FONT, SMALL_FONT, BLACK, 500, 715, CLOCK)
 
                 if b2.collidepoint(e.pos):
-                    cc(p, l1, l2, l3, BIG_FONT, SMALL_FONT, BLACK, 500, 500, contsign, CLOCK, nm)
+                    cc(p, l1, l2, l3, fin, BIG_FONT, SMALL_FONT, BLACK, 500, 500, contsign, CLOCK, nm)
 
         pygame.display.update()
         clock.tick(30)
 
-def prolg(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny, clock):
+def prolg(pl, l, ll, lll, f, fnt1, fnt2, txt_col, screenx, screeny, clock):
     
     
     title = fnt1.render('The King of Britain', True, txt_col)
@@ -165,33 +175,33 @@ def prolg(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny, clock):
       
         
         screen.blit(tt11, (5, 55))
-        screen.blit(tt12, (5, 95))
+        screen.blit(tt12, (5, 85))
 
-        screen.blit(tt21, (5, 135))
-        screen.blit(tt22, (5, 175))
-        screen.blit(tt23, (5, 215))
+        screen.blit(tt21, (5, 115))
+        screen.blit(tt22, (5, 145))
+        screen.blit(tt23, (5, 175))
 
-        screen.blit(tt31, (5, 255))
-        screen.blit(tt32, (5, 295))
+        screen.blit(tt31, (5, 205))
+        screen.blit(tt32, (5, 235))
 
-        screen.blit(tt41, (5, 335))
-        screen.blit(tt42, (5, 375))
-        screen.blit(tt43, (5, 415))
+        screen.blit(tt41, (5, 265))
+        screen.blit(tt42, (5, 295))
+        screen.blit(tt43, (5, 325))
 
-        screen.blit(tt51, (5, 455))
-        screen.blit(tt52, (5, 495))
-        screen.blit(tt53, (5, 535))
-        screen.blit(tt54, (5, 575))
+        screen.blit(tt51, (5, 355))
+        screen.blit(tt52, (5, 385))
+        screen.blit(tt53, (5, 415))
+        screen.blit(tt54, (5, 445))
         
-        screen.blit(tt61, (5, 615))
-        screen.blit(tt62, (5, 655))
-        screen.blit(tt63, (5, 695))
-        screen.blit(tt64, (5, 735))
-        screen.blit(tt65, (5, 775))
+        screen.blit(tt61, (5, 475))
+        screen.blit(tt62, (5, 505))
+        screen.blit(tt63, (5, 535))
+        screen.blit(tt64, (5, 565))
+        screen.blit(tt65, (5, 595))
         
-        screen.blit(tt71, (5, 815))
-        screen.blit(tt72, (5, 855))
-        screen.blit(tt73, (5, 895))
+        screen.blit(tt71, (5, 625))
+        screen.blit(tt72, (5, 655))
+        screen.blit(tt73, (5, 685))
 
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
@@ -200,7 +210,7 @@ def prolg(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny, clock):
             if e.type == pygame.MOUSEBUTTONDOWN:
                 p = False
                 l1 = True
-                levelselect(p, l1, l2, l3, CLOCK, name)
+                levelselect(p, l1, l2, l3, fin, CLOCK, name)
             
         pygame.display.update()
         clock.tick(30)
@@ -210,7 +220,7 @@ def fail():
     pygame.quit()
     sys.exit()
 
-def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny, ctc, clock, nm):
+def cc(pl, l, ll, lll, f, fnt1, fnt2, txt_col, screenx, screeny, ctc, clock, nm):
     name = nm
     q = ""
     box1 = InputBox(67, 215, 140, 22)
@@ -256,7 +266,7 @@ def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny, ctc, clock, nm):
                     p = False
                     l1 = False
                     l2 = True
-                    levelselect(p, l1, l2, l3, CLOCK, name)
+                    levelselect(p, l1, l2, l3, fin, CLOCK, name)
 
                 if day14 == True and box2.text == "y" or box2.text == "Y":
                     day14 = False
@@ -308,7 +318,7 @@ def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny, ctc, clock, nm):
         pygame.display.update()
         clock.tick(30)
 
-def qc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny, ctc, clock, nm):
+def qc(pl, l, ll, lll, f, fnt1, fnt2, txt_col, screenx, screeny, ctc, clock, nm):
     welcome = True
     week1 = False
     week2 = False
@@ -331,7 +341,7 @@ def qc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny, ctc, clock, nm):
                     l2 = False
                     l3 = True
                     name = nm
-                    levelselect(p, l1, l2, l3, CLOCK, name)
+                    levelselect(p, l1, l2, l3, fin, CLOCK, name)
 
                 if week1 == True and Q.text == "y" or Q.text == "Y":
                     week1 = False
@@ -359,10 +369,62 @@ def qc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny, ctc, clock, nm):
         pygame.display.update()
         clock.tick(30)
 
+def lc(pl, l, ll, lll, f, fnt1, fnt2, txt_col, screenx, screeny, ctc, clock, nm):
+    #??
+    year1 = False
+    year2 = False
+    #??
+    welcome = True
+    title = fnt1.render("John A. Macdonald", True, txt_col)
+    screen = pygame.display.set_mode((screenx, screeny))
+    Q = InputBox(450, 450, 25, 22)
+
+
+    while True:
+        screen.fill((214, 204, 169))
+        screen.blit(title, (5, 5))
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit() 
+            Q.handle_event(e)
+            
+            if e.type == pygame.MOUSEBUTTONDOWN:
+                if year2 == True:
+                    fin = True
+                    name = nm
+                    p = False
+                    levelselect(p, l1, l2, l3, fin, CLOCK, name)
+                if year1 == True and Q.text == "y" or Q.text == "Y":
+                    year1 = False
+                    year2 = True
+
+                if year1 == True and Q.text == "n" or Q.text == "N":
+                    fail()
+
+                if welcome == True:
+                    welcome = False
+                    year1 = True
+
+
+
+        if welcome == True:
+            screen.blit(ctc, (5, 55))
+
+        if year1 == True:
+            screen.blit(ctc, (15, 155))
+            Q.draw(screen)
         
+        if year2 == True:
+            screen.blit(ctc, (30, 300))
+
+        pygame.display.update()
+
+    
+           
 
 
 
 
 
-levelselect(p, l1, l2, l3, CLOCK, name)
+levelselect(p, l1, l2, l3, fin, CLOCK, name)
