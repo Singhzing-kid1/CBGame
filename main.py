@@ -7,24 +7,84 @@ SCREEN_SIZE = (500, 500)
 BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
 BIG_FONT = pygame.font.Font('SedgwickAveDisplay-Regular.ttf', 40)
-SMALL_FONT = pygame.font.Font('SedgwickAve-Regular.ttf', 30)
-bb1 = BIG_FONT.render('Prologue', True, BLACK)
+SMALL_FONT = pygame.font.Font('font.ttf', 20)
+CLOCK = pygame.time.Clock()
+bb1 = BIG_FONT.render('Prologue', True, BLUE)
 b1 = bb1.get_rect(topleft=(5, 5))
-bb2 = BIG_FONT.render('Charlottetown Conference', True, BLACK)
+bb2 = BIG_FONT.render('The Charlottetown Conference', True, BLUE)
 b2 = bb2.get_rect(topleft=(5, 5))
-bb3 = BIG_FONT.render('The Quebec Conference', True, BLACK)
-b3 = bb3.get_rect(topleft=(5, 5))
-bb4 = BIG_FONT.render('The London Conference', True, BLACK)
-b4 = bb4.get_rect(topleft=(5, 5))
-contsign = SMALL_FONT.render('Click to Continue', True, BLUE)
+bb3 = BIG_FONT.render('The Quebec Conference', True, BLUE)
+b3 = bb3.get_rect(topleft=(5, 55))
+bb4 = BIG_FONT.render('The London Conference', True, BLUE)
+b4 = bb4.get_rect(topleft=(5, 105))
+bbl1 = BIG_FONT.render('Prologue', True, BLACK)
+bl1 = bb1.get_rect(topleft=(5, 5))
+bbl2 = BIG_FONT.render('The Charlottetown Conference', True, BLACK)
+bl2 = bb2.get_rect(topleft=(5, 5))
+bbl3 = BIG_FONT.render('The Quebec Conference', True, BLACK)
+bl3 = bb3.get_rect(topleft=(5, 5))
+bbl4 = BIG_FONT.render('The London Conference', True, BLACK)
+bl4 = bb4.get_rect(topleft=(5, 5))
+
+contsign = SMALL_FONT.render("Click anywhere to continue", True, BLUE)
+
+
 p = True
 l1 = False
 l2 = False
 l3 = False
+name = ""
+COLOR_INACTIVE = pygame.Color('lightskyblue3')
+COLOR_ACTIVE = pygame.Color('dodgerblue2')
+FONT = pygame.font.Font(None, 20)
 
-def levelselect(pl, l, ll, lll):
+class InputBox:
+
+    def __init__(self, x, y, w, h, text=''):
+        self.rect = pygame.Rect(x, y, w, h)
+        self.color = COLOR_INACTIVE
+        self.text = text
+        self.txt_surface = FONT.render(text, True, self.color)
+        self.active = False
+        self.returntext = False
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            # If the user clicked on the input_box rect.
+            if self.rect.collidepoint(event.pos):
+                # Toggle the active variable.
+                self.active = not self.active
+            else:
+                self.active = False
+            # Change the current color of the input box.
+            self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
+        if event.type == pygame.KEYDOWN:
+            if self.active:
+                if event.key == pygame.K_RETURN:
+                    self.returntext = True
+                    
+                elif event.key == pygame.K_BACKSPACE:
+                    self.text = self.text[:-1]
+                else:
+                    self.text += event.unicode
+                # Re-render the text.
+                self.txt_surface = FONT.render(self.text, True, self.color)
+
+    def update(self):
+        # Resize the box if the text is too long.
+        width = max(200, self.txt_surface.get_width()+10)
+        self.rect.w = width
+
+    def draw(self, screen):
+        # Blit the text.
+        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
+        # Blit the rect.
+        pygame.draw.rect(screen, self.color, self.rect, 2)
+
+def levelselect(pl, l, ll, lll, clock, nm):
     screen = pygame.display.set_mode(SCREEN_SIZE)
     mousepos = pygame.mouse.get_pos()
+    
     
 
 
@@ -35,8 +95,14 @@ def levelselect(pl, l, ll, lll):
 
         if pl == False and l == True:
             screen.blit(bb2, b2)
-        if ll == True:
-            pass
+        if ll == True and l == False:
+            screen.blit(bbl2, bl2)
+            screen.blit(bb3, b3)
+
+        if lll == True and ll == False:
+            screen.blit(bbl2, b2)
+            screen.blit(bbl3, b3)
+            screen.blit(bb4, b4)
 
 
 
@@ -44,24 +110,26 @@ def levelselect(pl, l, ll, lll):
             if e.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
+
+            
             
             if e.type == pygame.MOUSEBUTTONDOWN:
+                if b3.collidepoint(e.pos):
+                    name = nm
+                    qc(p, l1, l2, l3, BIG_FONT, SMALL_FONT, BLACK, 500, 500, contsign, CLOCK, name)
+                    print("youu say ooooooogaaaa booooooga")
+                    
                 if b1.collidepoint(e.pos):
-                    prolg(p, l1, l2, l3, BIG_FONT, SMALL_FONT, BLACK, 500, 950)
+                    prolg(p, l1, l2, l3, BIG_FONT, SMALL_FONT, BLACK, 500, 950, CLOCK)
 
                 if b2.collidepoint(e.pos):
-                    cc(p, l1, l2, l3, BIG_FONT, SMALL_FONT, BLACK, 500, 500, contsign)
-
-
-            
-
-
-
-
+                    cc(p, l1, l2, l3, BIG_FONT, SMALL_FONT, BLACK, 500, 500, contsign, CLOCK, nm)
 
         pygame.display.update()
+        clock.tick(30)
 
-def prolg(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny):
+def prolg(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny, clock):
     
     
     title = fnt1.render('The King of Britain', True, txt_col)
@@ -132,24 +200,21 @@ def prolg(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny):
             if e.type == pygame.MOUSEBUTTONDOWN:
                 p = False
                 l1 = True
-                levelselect(p, l1, l2, l3)
+                levelselect(p, l1, l2, l3, CLOCK, name)
             
-                    
-            
-                
-            
-            
-            
-            
-            
-
-
-
         pygame.display.update()
+        clock.tick(30)
 
+def fail():
+    print("HAHA YOU FAILED!!")
+    pygame.quit()
+    sys.exit()
 
-def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny, ctc):
-    name = ""
+def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny, ctc, clock, nm):
+    name = nm
+    q = ""
+    box1 = InputBox(67, 215, 140, 22)
+    box2 = InputBox(450, 450, 25, 22)
     screen = pygame.display.set_mode((screenx, screeny))
     title = fnt1.render("John A. Macdonald", True, txt_col)
     t1 = fnt2.render("He told me you would come.", True, txt_col)
@@ -162,132 +227,142 @@ def cc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny, ctc):
     tt43 = fnt2.render("Brown", True, txt_col)
     tt51 = fnt2.render("Our goal is to convince the maritime", True, txt_col) 
     tt52 = fnt2.render("provinces to join the province of Canada", True, txt_col)
-    ctc_hitbox = ctc.get_rect(topleft = (5, 335))
-    font = pygame.font.Font(None, 30)
-    
+        
     welcome = False
     day14 = False
     day57 = False
-    text = ""
-    input_box = pygame.Rect(67, 226, 140, 32)
-
-    
-    
-    color_inactive = pygame.Color('lightskyblue3')
-    color_active = pygame.Color('dodgerblue2')
-    color = color_inactive
-    greet = True
-    active = False
-    nameshow = False 
-
+    greet = True 
 
     while True:
-        print(welcome)
         mousepos = pygame.mouse.get_pos()
         tt31 = fnt2.render("Well " + name + ", We are headed to the", True, txt_col)
         tt32 = fnt2.render("Charlottetown Conference.", True, txt_col)
         screen.fill((214, 204, 169))
         screen.blit(title, (5, 5))
-        name = ""
+        
 
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
+            
+            box1.handle_event(e)
+            box2.handle_event(e)
+
+        #start name input box + extras    
             if e.type == pygame.MOUSEBUTTONDOWN:
-                if input_box.collidepoint(e.pos):
-                    # Toggle the active variable.
-                    active = not active
-                else:
-                    active = False
-                # Change the current color of the input box.
-                color = color_active if active else color_inactive
+                if day57 == True:
+                    p = False
+                    l1 = False
+                    l2 = True
+                    levelselect(p, l1, l2, l3, CLOCK, name)
 
-                if ctc_hitbox.collidepoint(e.pos):
+                if day14 == True and box2.text == "y" or box2.text == "Y":
+                    day14 = False
+                    day57 = True
+                elif day14 == True and box2.text == "n" or box2.text == "N":
+                    fail()
+
+                if welcome == True:
                     welcome = False
-                    nameshow = False
+                    box1.returntext = False
                     day14 = True
-            if e.type == pygame.KEYDOWN:
-                if active:
-                    if e.key == pygame.K_RETURN:
-
-                        nameshow = True
-                        
-                        
-                    elif e.key == pygame.K_BACKSPACE:
-                        text = text[:-1]
-                    else:
-                        text += e.unicode
-
+        #end name input + extras
+        
         if greet == True:
             screen.blit(t1, (5, 55))
-            screen.blit(t21, (5, 95))
-            screen.blit(t22, (5, 135))
-            screen.blit(t31, (5, 175))
-            screen.blit(t32, (5, 215))
-            txt_surface = font.render(text, True, txt_col)
-            width = max(200, txt_surface.get_width()+10)
-            input_box.w = width
-            # Blit the text.
-            screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
-
-            pygame.draw.rect(screen, color, input_box, 2)
+            screen.blit(t21, (5, 85))
+            screen.blit(t22, (5, 115))
+            screen.blit(t31, (5, 145))
+            screen.blit(t32, (5, 175))
+            box1.update()
+            box1.draw(screen)
+            
 
         if welcome == True:
             screen.blit(tt31, (5, 55))
-            screen.blit(tt32, (5, 95))
-            screen.blit(tt41, (5, 135))
-            screen.blit(tt42, (5, 175))
-            screen.blit(tt43, (5, 215))
-            screen.blit(tt51, (5, 255))
-            screen.blit(tt52, (5, 295))
-            screen.blit(ctc, (5, 335))
+            screen.blit(tt32, (5, 85))
+            screen.blit(tt41, (5, 115))
+            screen.blit(tt42, (5, 145))
+            screen.blit(tt43, (5, 175))
+            screen.blit(tt51, (5, 205))
+            screen.blit(tt52, (5, 235))
+            screen.blit(ctc, (5, 265))
+        
         if day14 == True:
-            screen.blit(ctc, (5, 55))
-        
-
+            box2.draw(screen)
             
-
-
-        
-        if nameshow == True:
             
-            name = text
+            screen.blit(ctc, (5, 335))
+
+        if box1.returntext == True:
+            
+            name = box1.text
+            box1.active = False
             greet = False
             welcome = True
             
+        
                
-            
-
-        
-        
         pygame.display.update()
+        clock.tick(30)
+
+def qc(pl, l, ll, lll, fnt1, fnt2, txt_col, screenx, screeny, ctc, clock, nm):
+    welcome = True
+    week1 = False
+    week2 = False
+    Q = InputBox(450, 450, 25, 22)
+    num = 0
+    title = fnt1.render("John A. Macdonald", True, txt_col)
+    screen = pygame.display.set_mode((screenx, screeny))
+    while True:
+        screen.fill((214, 204, 169))
+        screen.blit(title, (5, 5))
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if e.type == pygame.MOUSEBUTTONDOWN:
+                if week2 == True:
+                    p = False
+                    l1 = False
+                    l2 = False
+                    l3 = True
+                    name = nm
+                    levelselect(p, l1, l2, l3, CLOCK, name)
+
+                if week1 == True and Q.text == "y" or Q.text == "Y":
+                    week1 = False
+                    week2 = True
+
+                if week1 == True and Q.text == "n" or Q.text == "Y":
+                    fail()
+
+                if welcome == True:
+                    welcome = False
+                    week1 = True
+
+            Q.handle_event(e)
+        
+        if welcome == True:
+            screen.blit(ctc, (5, 55))
+
+        if week1 == True:
+            screen.blit(ctc, (100, 100))
+            Q.draw(screen)
+
+        if week2 == True:
+            screen.blit(ctc, (15, 155))
+
+        pygame.display.update()
+        clock.tick(30)
+
+        
 
 
 
-levelselect(p, l1, l2, l3)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+levelselect(p, l1, l2, l3, CLOCK, name)
